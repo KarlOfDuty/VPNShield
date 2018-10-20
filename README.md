@@ -20,8 +20,11 @@ Default config:
 ```
 
 `block-vpns` - Turns blocking of VPNs on or off.
+
 `iphub-api-key` - API key required for VPN blocking. Get one here: https://iphub.info/apiKey/newFree
+
 `strictmode` - Turns on stricter VPN blocking. Not recommended as it may flag some players incorrectly.
+
 `block-new-steam-accounts` - Blocks steam users who have not bought anything on steam as they are likely not real accounts.
 
 # Command
