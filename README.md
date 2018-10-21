@@ -13,9 +13,9 @@ Default config:
 ```json
 {
     "block-vpns": true,
-    "iphub-apikey": "put-key-here",
-    "strictmode": false,
-    "block-new-steam-accounts": true
+    "iphub-apikey": "key-here",
+    "block-new-steam-accounts": true,
+    "verbose":false
 }
 ```
 
@@ -23,10 +23,14 @@ Default config:
 
 `iphub-api-key` - API key required for VPN blocking. Get one here: https://iphub.info/apiKey/newFree
 
-`strictmode` - Turns on stricter VPN blocking. Not recommended as it may flag some players incorrectly.
-
 `block-new-steam-accounts` - Blocks steam users who have not bought anything on steam as they are likely not real accounts.
+
+`verbose` - Sends more console messages.
 
 # Command
 
 `vs_reload` - Reloads the vs config.
+
+`vs_enable` - Enables features of the plugin.
+
+`vs_disable` - Disables features of the plugin.
