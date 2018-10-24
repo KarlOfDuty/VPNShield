@@ -1,5 +1,5 @@
 # VPNShield
-An Anti-VPN plugin for servermod. Also features blocking new Steam accounts who have not bought anything on Steam.
+An Anti-VPN plugin for servermod. Also features blocking new Steam accounts who have not bought anything on Steam. Users with server ranks are ignored.
 
 # Installation
 
