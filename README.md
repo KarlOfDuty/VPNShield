@@ -34,3 +34,5 @@ Default config:
 `vs_enable` - Enables features of the plugin.
 
 `vs_disable` - Disables features of the plugin.
+
+`vs_whitelist` - Whitelists a user by steamid.
