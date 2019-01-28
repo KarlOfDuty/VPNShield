@@ -21,10 +21,10 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.0.1-B",
+        version = "3.0.2",
         SmodMajor = 3,
         SmodMinor = 2,
-        SmodRevision = 0
+        SmodRevision = 2
     )]
     public class VPNShield : Plugin
     {
