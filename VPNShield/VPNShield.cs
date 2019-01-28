@@ -21,7 +21,7 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.0.2",
+        version = "3.1.1",
         SmodMajor = 3,
         SmodMinor = 2,
         SmodRevision = 2
