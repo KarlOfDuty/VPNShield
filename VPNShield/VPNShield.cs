@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace VPNShield
 {
@@ -35,21 +36,20 @@ namespace VPNShield
         public bool autoWhitelistUpdated = false;
         public bool autoBlacklistUpdated = false;
 
-        readonly string defaultConfig =
-        "{\n"                                       +
-        "    \"block-vpns\": false,\n"              +
+        private readonly string defaultConfig =
+        "{\n" +
+        "    \"block-vpns\": false,\n" +
         "    \"iphub-apikey\": \"put-key-here\",\n" +
         "    \"block-new-steam-accounts\": true,\n" +
-        "    \"verbose\": false,\n"                 +
+        "    \"verbose\": false,\n" +
         "}";
 
-        readonly string defaultlist =
+        private readonly string defaultlist =
         "[\n" +
         "]";
 
         public override void OnDisable()
         {
-
         }
 
         public override void Register()
@@ -143,7 +143,7 @@ namespace VPNShield
 
         public bool CheckVPN(PlayerJoinEvent ev)
         {
-            if(!config.Value<bool>("block-vpns"))
+            if (!config.Value<bool>("block-vpns"))
             {
                 return false;
             }
@@ -201,7 +201,7 @@ namespace VPNShield
                 if (e.Status == WebExceptionStatus.ProtocolError)
                 {
                     response = (HttpWebResponse)e.Response;
-                    if((int)response.StatusCode == 429)
+                    if ((int)response.StatusCode == 429)
                     {
                         this.Warn("Anti-VPN check could not complete, you have reached your API key's rate limit.");
                     }
@@ -250,14 +250,13 @@ namespace VPNShield
                 if (isLimitedAccount)
                 {
                     this.Info(ev.Player.Name + " has a new steam account with no purchases.");
-                    if(config.Value<bool>("block-new-steam-accounts"))
+                    if (config.Value<bool>("block-new-steam-accounts"))
                     {
                         ev.Player.Ban(0, "This server does not allow new Steam accounts, you have to buy something on Steam before playing.");
                         return true;
                     }
-
                 }
-                else if(config.Value<bool>("verbose"))
+                else if (config.Value<bool>("verbose"))
                 {
                     this.Info(ev.Player.Name + " has a legit steam account.");
                 }
@@ -313,9 +312,10 @@ namespace VPNShield
         }
     }
 
-    class EnableCommand : ICommandHandler
+    internal class EnableCommand : ICommandHandler
     {
         private VPNShield plugin;
+
         public EnableCommand(VPNShield plugin)
         {
             this.plugin = plugin;
@@ -340,7 +340,7 @@ namespace VPNShield
                     plugin.config["block-vpns"] = true;
                     return new string[] { "Blocking of VPNs enabled." };
                 }
-                else if(args[0] == "steam-check")
+                else if (args[0] == "steam-check")
                 {
                     plugin.config["block-new-steam-accounts"] = true;
                     return new string[] { "Blocking of new Steam accounts enabled." };
@@ -350,9 +350,10 @@ namespace VPNShield
         }
     }
 
-    class DisableCommand : ICommandHandler
+    internal class DisableCommand : ICommandHandler
     {
         private VPNShield plugin;
+
         public DisableCommand(VPNShield plugin)
         {
             this.plugin = plugin;
@@ -387,9 +388,10 @@ namespace VPNShield
         }
     }
 
-    class WhitelistCommand : ICommandHandler
+    internal class WhitelistCommand : ICommandHandler
     {
         private VPNShield plugin;
+
         public WhitelistCommand(VPNShield plugin)
         {
             this.plugin = plugin;
@@ -426,9 +428,10 @@ namespace VPNShield
         }
     }
 
-    class ReloadCommand : ICommandHandler
+    internal class ReloadCommand : ICommandHandler
     {
         private VPNShield plugin;
+
         public ReloadCommand(VPNShield plugin)
         {
             this.plugin = plugin;
@@ -455,9 +458,10 @@ namespace VPNShield
         }
     }
 
-    class SaveData : IEventHandlerWaitingForPlayers
+    internal class SaveData : IEventHandlerWaitingForPlayers
     {
         private VPNShield plugin;
+
         public SaveData(VPNShield plugin)
         {
             this.plugin = plugin;
@@ -465,7 +469,7 @@ namespace VPNShield
 
         public void OnWaitingForPlayers(WaitingForPlayersEvent ev)
         {
-            if(plugin.autoWhitelistUpdated)
+            if (plugin.autoWhitelistUpdated)
             {
                 plugin.SaveAutoWhitelistToFile();
                 plugin.autoWhitelistUpdated = false;
@@ -478,34 +482,43 @@ namespace VPNShield
         }
     }
 
-    class CheckPlayer : IEventHandlerPlayerJoin
+    internal class CheckPlayer : IEventHandlerPlayerJoin
     {
         private VPNShield plugin;
+
         public CheckPlayer(VPNShield plugin)
         {
             this.plugin = plugin;
         }
+
         public void OnPlayerJoin(PlayerJoinEvent ev)
         {
-            if (ev.Player.GetRankName() != "")
+            new Task(() =>
             {
-                return;
-            }
+                if (ev.Player.GetRankName() != "")
+                {
+                    plugin.Info("Succeeded check.");
+                    return;
+                }
 
-            if (plugin.whitelist.Contains(ev.Player.SteamId))
-            {
-                return;
-            }
+                if (plugin.whitelist.Contains(ev.Player.SteamId))
+                {
+                    plugin.Info("Succeeded check.");
+                    return;
+                }
 
-            if (plugin.CheckSteamAccount(ev))
-            {
-                return;
-            }
+                if (plugin.CheckSteamAccount(ev))
+                {
+                    plugin.Info("Succeeded check.");
+                    return;
+                }
 
-            if(plugin.CheckVPN(ev))
-            {
-                return;
-            }
+                if (plugin.CheckVPN(ev))
+                {
+                    plugin.Info("Succeeded check.");
+                    return;
+                }
+            }).Start();
         }
     }
 }
