@@ -21,10 +21,10 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.1.1",
+        version = "3.1.2",
         SmodMajor = 3,
-        SmodMinor = 2,
-        SmodRevision = 2
+        SmodMinor = 3,
+        SmodRevision = 0
     )]
     public class VPNShield : Plugin
     {
@@ -497,25 +497,21 @@ namespace VPNShield
             {
                 if (ev.Player.GetRankName() != "")
                 {
-                    plugin.Info("Succeeded check.");
                     return;
                 }
 
                 if (plugin.whitelist.Contains(ev.Player.SteamId))
                 {
-                    plugin.Info("Succeeded check.");
                     return;
                 }
 
                 if (plugin.CheckSteamAccount(ev))
                 {
-                    plugin.Info("Succeeded check.");
                     return;
                 }
 
                 if (plugin.CheckVPN(ev))
                 {
-                    plugin.Info("Succeeded check.");
                     return;
                 }
             }).Start();
