@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Smod2;
+using Smod2.API;
 using Smod2.Attributes;
 using Smod2.Commands;
 using Smod2.EventHandlers;
@@ -337,11 +338,25 @@ namespace VPNShield
             {
                 if (args[0] == "vpn-check")
                 {
+                    if (sender is Player player)
+                    {
+                        if (!player.HasPermission("vpnshield.enable.vpn"))
+                        {
+                            return new string[] { "You don't have permission to use that command." };
+                        }
+                    }
                     plugin.config["block-vpns"] = true;
                     return new string[] { "Blocking of VPNs enabled." };
                 }
                 else if (args[0] == "steam-check")
                 {
+                    if (sender is Player player)
+                    {
+                        if (!player.HasPermission("vpnshield.enable.steam"))
+                        {
+                            return new string[] { "You don't have permission to use that command." };
+                        }
+                    }
                     plugin.config["block-new-steam-accounts"] = true;
                     return new string[] { "Blocking of new Steam accounts enabled." };
                 }
@@ -375,11 +390,25 @@ namespace VPNShield
             {
                 if (args[0] == "vpn-check")
                 {
+                    if (sender is Player player)
+                    {
+                        if (!player.HasPermission("vpnshield.disable.vpn"))
+                        {
+                            return new string[] { "You don't have permission to use that command." };
+                        }
+                    }
                     plugin.config["block-vpns"] = false;
                     return new string[] { "Blocking of VPNs disabled." };
                 }
                 else if (args[0] == "steam-check")
                 {
+                    if (sender is Player player)
+                    {
+                        if (!player.HasPermission("vpnshield.disable.steam"))
+                        {
+                            return new string[] { "You don't have permission to use that command." };
+                        }
+                    }
                     plugin.config["block-new-steam-accounts"] = false;
                     return new string[] { "Blocking of new Steam accounts disabled." };
                 }
@@ -409,6 +438,14 @@ namespace VPNShield
 
         public string[] OnCall(ICommandSender sender, string[] args)
         {
+            if (sender is Player player)
+            {
+                if (!player.HasPermission("vpnshield.whitelist"))
+                {
+                    return new string[] { "You don't have permission to use that command." };
+                }
+            }
+
             if (args.Length > 0)
             {
                 if (plugin.whitelist.Contains(args[0]))
@@ -449,6 +486,14 @@ namespace VPNShield
 
         public string[] OnCall(ICommandSender sender, string[] args)
         {
+            if (sender is Player player)
+            {
+                if (!player.HasPermission("vpnshield.reload"))
+                {
+                    return new string[] { "You don't have permission to use that command." };
+                }
+            }
+
             plugin.SetUpFileSystem();
             plugin.config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/config.json"));
             plugin.autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/auto-whitelist.json")).Values<string>());
@@ -496,6 +541,11 @@ namespace VPNShield
             new Task(() =>
             {
                 if (ev.Player.GetRankName() != "")
+                {
+                    return;
+                }
+
+                if (ev.Player.HasPermission("vpnshield.exempt"))
                 {
                     return;
                 }
