@@ -36,3 +36,15 @@ Default config:
 `vs_disable` - Disables features of the plugin.
 
 `vs_whitelist` - Whitelists a user by steamid.
+
+# Permissions
+
+| Permission | Description |
+|----------  |-----------  |
+| `vpnshield.exempt` | Makes a player exempt from the checks. |
+| `vpnshield.reload` | Lets a player reload the plugin. |
+| `vpnshield.enable.vpn` | Lets a player enable the vpn check. |
+| `vpnshield.enable.steam` | Lets a player toggle the steam account check. |
+| `vpnshield.disable.vpn` | Lets a player disable the vpn check. |
+| `vpnshield.disable.steam` | Lets a player disable the steam account check. |
+| `vpnshield.whitelist` | Lets a player add players to the whitelist. |
