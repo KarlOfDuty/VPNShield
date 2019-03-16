@@ -3,6 +3,7 @@ using Smod2;
 using Smod2.API;
 using Smod2.Attributes;
 using Smod2.Commands;
+using Smod2.Config;
 using Smod2.EventHandlers;
 using Smod2.Events;
 using System;
@@ -65,41 +66,52 @@ namespace VPNShield
 
         public override void OnEnable()
         {
-            SetUpFileSystem();
+            this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
 
-            config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/config.json"));
-            autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/auto-whitelist.json")).Values<string>());
-            autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/auto-blacklist.json")).Values<string>());
-            whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/whitelist.json")).Values<string>());
-
-            this.Info("VPNShield enabled.");
+			new Task(async () =>
+			{
+				await Task.Delay(4000);
+				try
+				{
+					SetUpFileSystem();
+					config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
+					autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
+					autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
+					whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
+				}
+				catch (Exception e)
+				{
+					this.Error("Could not load config: " + e.ToString());
+				}
+				this.Info("VPNShield enabled.");
+			}).Start();
         }
 
         public void SetUpFileSystem()
         {
-            if (!Directory.Exists(FileManager.GetAppFolder() + "VPNShield"))
+            if (!Directory.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield"))
             {
-                Directory.CreateDirectory(FileManager.GetAppFolder() + "VPNShield");
+                Directory.CreateDirectory(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield");
             }
 
-            if (!File.Exists(FileManager.GetAppFolder() + "VPNShield/config.json"))
+            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/config.json", defaultConfig);
+                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json", defaultConfig);
             }
 
-            if (!File.Exists(FileManager.GetAppFolder() + "VPNShield/auto-whitelist.json"))
+            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/auto-whitelist.json", defaultlist);
+                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json", defaultlist);
             }
 
-            if (!File.Exists(FileManager.GetAppFolder() + "VPNShield/auto-blacklist.json"))
+            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/auto-blacklist.json", defaultlist);
+                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json", defaultlist);
             }
 
-            if (!File.Exists(FileManager.GetAppFolder() + "VPNShield/whitelist.json"))
+            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/whitelist.json", defaultlist);
+                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json", defaultlist);
             }
         }
 
@@ -113,7 +125,7 @@ namespace VPNShield
                 builder.Append("    \"" + line + "\"," + "\n");
             }
             builder.Append("]\n");
-            File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/whitelist.json", builder.ToString());
+            File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json", builder.ToString());
         }
 
         public void SaveAutoWhitelistToFile()
@@ -126,7 +138,7 @@ namespace VPNShield
                 builder.Append("    \"" + line + "\"," + "\n");
             }
             builder.Append("]\n");
-            File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/auto-whitelist.json", builder.ToString());
+            File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json", builder.ToString());
         }
 
         public void SaveAutoBlacklistToFile()
@@ -139,7 +151,7 @@ namespace VPNShield
                 builder.Append("    \"" + line + "\"," + "\n");
             }
             builder.Append("]\n");
-            File.WriteAllText(FileManager.GetAppFolder() + "VPNShield/auto-blacklist.json", builder.ToString());
+            File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json", builder.ToString());
         }
 
         public bool CheckVPN(PlayerJoinEvent ev)
@@ -495,10 +507,10 @@ namespace VPNShield
             }
 
             plugin.SetUpFileSystem();
-            plugin.config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/config.json"));
-            plugin.autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/auto-whitelist.json")).Values<string>());
-            plugin.autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/auto-blacklist.json")).Values<string>());
-            plugin.whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder() + "VPNShield/whitelist.json")).Values<string>());
+            plugin.config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/config.json"));
+            plugin.autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
+            plugin.autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
+            plugin.whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
             return new string[] { "VPNShield has been reloaded." };
         }
     }
