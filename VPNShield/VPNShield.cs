@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using Smod2;
 using Smod2.API;
 using Smod2.Attributes;
@@ -23,7 +23,7 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.1.2",
+        version = "3.1.3",
         SmodMajor = 3,
         SmodMinor = 3,
         SmodRevision = 0
