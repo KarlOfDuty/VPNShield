@@ -23,9 +23,9 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.1.3",
+        version = "3.2.0",
         SmodMajor = 3,
-        SmodMinor = 3,
+        SmodMinor = 4,
         SmodRevision = 0
     )]
     public class VPNShield : Plugin
@@ -56,35 +56,33 @@ namespace VPNShield
 
         public override void Register()
         {
-            this.AddEventHandlers(new CheckPlayer(this), Priority.High);
-            this.AddEventHandlers(new SaveData(this), Priority.High);
+            this.AddEventHandlers(new CheckPlayer(this));
+            this.AddEventHandlers(new SaveData(this));
             this.AddCommand("vs_reload", new ReloadCommand(this));
             this.AddCommand("vs_enable", new EnableCommand(this));
             this.AddCommand("vs_disable", new DisableCommand(this));
             this.AddCommand("vs_whitelist", new WhitelistCommand(this));
+			this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
         }
 
         public override void OnEnable()
         {
-            this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
-
-			new Task(async () =>
+			try
 			{
-				await Task.Delay(4000);
-				try
-				{
-					SetUpFileSystem();
-					config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
-					autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
-					autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
-					whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
-				}
-				catch (Exception e)
-				{
-					this.Error("Could not load config: " + e.ToString());
-				}
-				this.Info("VPNShield enabled.");
-			}).Start();
+				SetUpFileSystem();
+				this.Info("Loading config: " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json...");
+				config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
+				this.Info("Loaded config.");
+				this.Info("Loading data files from " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/...");
+				autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
+				autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
+				whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
+				this.Info("Loaded data files.");
+			}
+			catch (Exception e)
+			{
+				this.Error("Could not load config: " + e.ToString());
+			}
         }
 
         public void SetUpFileSystem()
