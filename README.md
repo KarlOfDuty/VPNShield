@@ -27,7 +27,7 @@ Default config:
 
 `verbose` - Sends more console messages.
 
-# Command
+# Commands
 
 `vs_reload` - Reloads the vs config.
 
