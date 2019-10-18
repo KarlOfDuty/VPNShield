@@ -23,7 +23,7 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.2.0",
+        version = "3.3.0",
         SmodMajor = 3,
         SmodMinor = 4,
         SmodRevision = 0
@@ -38,12 +38,16 @@ namespace VPNShield
         public bool autoWhitelistUpdated = false;
         public bool autoBlacklistUpdated = false;
 
-        private readonly string defaultConfig =
+		public string noPurchaseKick;
+		public string nonSetupKick;
+
+		private readonly string defaultConfig =
         "{\n" +
         "    \"block-vpns\": false,\n" +
         "    \"iphub-apikey\": \"put-key-here\",\n" +
         "    \"block-new-steam-accounts\": true,\n" +
-        "    \"verbose\": false,\n" +
+		"    \"block-non-setup-steam-accounts\": true,\n" +
+		"    \"verbose\": false,\n" +
         "}";
 
         private readonly string defaultlist =
@@ -63,7 +67,9 @@ namespace VPNShield
             this.AddCommand("vs_disable", new DisableCommand(this));
             this.AddCommand("vs_whitelist", new WhitelistCommand(this));
 			this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
-        }
+			this.AddConfig(new ConfigSetting("vs_no_purchases_message", "This server does not allow new Steam accounts, you have to buy something on Steam before playing.", true, "The message to display to players who are kicked for having a steam account without a purchased game."));
+			this.AddConfig(new ConfigSetting("vs_non_setup_message", "This server does not allow non setup Steam accounts, you have to setup your Steam profile before playing.", true, "The message to display to players who are kicked for having a Steam account that is not yet setup."));
+		}
 
         public override void OnEnable()
         {
@@ -253,8 +259,17 @@ namespace VPNShield
 
                 if (foundStrings.Length == 0)
                 {
-                    this.Error("Steam account check failed. Their profile did not have the required information.");
-                    return false;
+					if (config.Value<bool>("block-non-setup-steam-accounts"))
+					{
+						this.Info(ev.Player.Name + " has a non setup steam account.");
+						ev.Player.Ban(0, nonSetupKick);
+						return true;
+					}
+					else
+					{
+						this.Error("Steam account check failed. Their profile did not have the required information.");
+						return false;
+					}
                 }
 
                 bool isLimitedAccount = foundStrings[0].Where(c => char.IsDigit(c)).ToArray()[0] != '0';
@@ -263,7 +278,7 @@ namespace VPNShield
                     this.Info(ev.Player.Name + " has a new steam account with no purchases.");
                     if (config.Value<bool>("block-new-steam-accounts"))
                     {
-                        ev.Player.Ban(0, "This server does not allow new Steam accounts, you have to buy something on Steam before playing.");
+                        ev.Player.Ban(0, noPurchaseKick);
                         return true;
                     }
                 }
@@ -534,7 +549,10 @@ namespace VPNShield
                 plugin.SaveAutoBlacklistToFile();
                 plugin.autoBlacklistUpdated = false;
             }
-        }
+
+			plugin.noPurchaseKick = plugin.GetConfigString("vs_no_purchases_message");
+			plugin.nonSetupKick = plugin.GetConfigString("vs_non_setup_message");
+		}
     }
 
     internal class CheckPlayer : IEventHandlerPlayerJoin
