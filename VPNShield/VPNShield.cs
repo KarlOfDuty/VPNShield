@@ -38,15 +38,14 @@ namespace VPNShield
         public bool autoWhitelistUpdated = false;
         public bool autoBlacklistUpdated = false;
 
-		public string noPurchaseKick;
-		public string nonSetupKick;
-
 		private readonly string defaultConfig =
         "{\n" +
         "    \"block-vpns\": false,\n" +
         "    \"iphub-apikey\": \"put-key-here\",\n" +
         "    \"block-new-steam-accounts\": true,\n" +
-		"    \"block-non-setup-steam-accounts\": true,\n" +
+        "    \"block-non-setup-steam-accounts\": true,\n" +
+        "    \"no-purchases-kick-message\": \"This server does not allow new Steam accounts, you have to buy something on Steam before playing.\",\n" +
+        "    \"non-setup-kick-message\": \"This server does not allow non setup Steam accounts, you have to setup your Steam profile before playing.\",\n" +
 		"    \"verbose\": false,\n" +
         "}";
 
@@ -67,8 +66,6 @@ namespace VPNShield
             this.AddCommand("vs_disable", new DisableCommand(this));
             this.AddCommand("vs_whitelist", new WhitelistCommand(this));
 			this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
-			this.AddConfig(new ConfigSetting("vs_no_purchases_message", "This server does not allow new Steam accounts, you have to buy something on Steam before playing.", true, "The message to display to players who are kicked for having a steam account without a purchased game."));
-			this.AddConfig(new ConfigSetting("vs_non_setup_message", "This server does not allow non setup Steam accounts, you have to setup your Steam profile before playing.", true, "The message to display to players who are kicked for having a Steam account that is not yet setup."));
 		}
 
         public override void OnEnable()
@@ -262,7 +259,7 @@ namespace VPNShield
 					if (config.Value<bool>("block-non-setup-steam-accounts"))
 					{
 						this.Info(ev.Player.Name + " has a non setup steam account.");
-						ev.Player.Ban(0, nonSetupKick);
+						ev.Player.Ban(0, config.Value<string>("non-setup-kick-message"));
 						return true;
 					}
 					else
@@ -278,7 +275,7 @@ namespace VPNShield
                     this.Info(ev.Player.Name + " has a new steam account with no purchases.");
                     if (config.Value<bool>("block-new-steam-accounts"))
                     {
-                        ev.Player.Ban(0, noPurchaseKick);
+                        ev.Player.Ban(0, config.Value<string>("no-purchases-kick-message"));
                         return true;
                     }
                 }
@@ -549,9 +546,6 @@ namespace VPNShield
                 plugin.SaveAutoBlacklistToFile();
                 plugin.autoBlacklistUpdated = false;
             }
-
-			plugin.noPurchaseKick = plugin.GetConfigString("vs_no_purchases_message");
-			plugin.nonSetupKick = plugin.GetConfigString("vs_non_setup_message");
 		}
     }
 
