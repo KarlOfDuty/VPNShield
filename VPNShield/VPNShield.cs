@@ -38,7 +38,7 @@ namespace VPNShield
         public bool autoWhitelistUpdated = false;
         public bool autoBlacklistUpdated = false;
 
-		private readonly string defaultConfig =
+        private readonly string defaultConfig =
         "{\n" +
         "    \"block-vpns\": false,\n" +
         "    \"iphub-apikey\": \"put-key-here\",\n" +
@@ -46,7 +46,7 @@ namespace VPNShield
         "    \"block-non-setup-steam-accounts\": true,\n" +
         "    \"no-purchases-kick-message\": \"This server does not allow new Steam accounts, you have to buy something on Steam before playing.\",\n" +
         "    \"non-setup-kick-message\": \"This server does not allow non setup Steam accounts, you have to setup your Steam profile before playing.\",\n" +
-		"    \"verbose\": false,\n" +
+        "    \"verbose\": false,\n" +
         "}";
 
         private readonly string defaultlist =
@@ -65,27 +65,27 @@ namespace VPNShield
             this.AddCommand("vs_enable", new EnableCommand(this));
             this.AddCommand("vs_disable", new DisableCommand(this));
             this.AddCommand("vs_whitelist", new WhitelistCommand(this));
-			this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
-		}
+            this.AddConfig(new ConfigSetting("vs_global", true, true, "Whether or not to use the global config directory, default is true"));
+        }
 
         public override void OnEnable()
         {
-			try
-			{
-				SetUpFileSystem();
-				this.Info("Loading config: " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json...");
-				config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
-				this.Info("Loaded config.");
-				this.Info("Loading data files from " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/...");
-				autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
-				autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
-				whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
-				this.Info("Loaded data files.");
-			}
-			catch (Exception e)
-			{
-				this.Error("Could not load config: " + e.ToString());
-			}
+            try
+            {
+                SetUpFileSystem();
+                this.Info("Loading config: " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json...");
+                config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
+                this.Info("Loaded config.");
+                this.Info("Loading data files from " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/...");
+                autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
+                autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
+                whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
+                this.Info("Loaded data files.");
+            }
+            catch (Exception e)
+            {
+                this.Error("Could not load config: " + e.ToString());
+            }
         }
 
         public void SetUpFileSystem()
@@ -256,17 +256,17 @@ namespace VPNShield
 
                 if (foundStrings.Length == 0)
                 {
-					if (config.Value<bool>("block-non-setup-steam-accounts"))
-					{
-						this.Info(ev.Player.Name + " has a non setup steam account.");
-						ev.Player.Ban(0, config.Value<string>("non-setup-kick-message"));
-						return true;
-					}
-					else
-					{
-						this.Error("Steam account check failed. Their profile did not have the required information.");
-						return false;
-					}
+                    if (config.Value<bool>("block-non-setup-steam-accounts"))
+                    {
+                        this.Info(ev.Player.Name + " has a non setup steam account.");
+                        ev.Player.Ban(0, config.Value<string>("non-setup-kick-message"));
+                        return true;
+                    }
+                    else
+                    {
+                        this.Error("Steam account check failed. Their profile did not have the required information.");
+                        return false;
+                    }
                 }
 
                 bool isLimitedAccount = foundStrings[0].Where(c => char.IsDigit(c)).ToArray()[0] != '0';
@@ -546,7 +546,7 @@ namespace VPNShield
                 plugin.SaveAutoBlacklistToFile();
                 plugin.autoBlacklistUpdated = false;
             }
-		}
+        }
     }
 
     internal class CheckPlayer : IEventHandlerPlayerJoin
