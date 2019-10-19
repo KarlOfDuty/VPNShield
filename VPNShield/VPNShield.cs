@@ -73,6 +73,7 @@ namespace VPNShield
             try
             {
                 SetUpFileSystem();
+				ValidateConfig();
                 this.Info("Loading config: " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json...");
                 config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
                 this.Info("Loaded config.");
@@ -81,8 +82,8 @@ namespace VPNShield
                 autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
                 whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
                 this.Info("Loaded data files.");
-            }
-            catch (Exception e)
+			}
+			catch (Exception e)
             {
                 this.Error("Could not load config: " + e.ToString());
             }
@@ -115,6 +116,23 @@ namespace VPNShield
                 File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json", defaultlist);
             }
         }
+
+		public void ValidateConfig()
+		{
+			List<string> lines = File.ReadAllLines(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json").ToList();
+			string[] configEntries = defaultConfig.Split(Environment.NewLine.ToCharArray());
+			for (int i = 1; i < configEntries.Length - 1; i++)
+			{
+				string[] split = configEntries[i].Split(':');
+				string configKey = split[0];
+				string configValue = split[1];
+				if (!lines.Select(x => x.Split(':')[0]).Contains(configKey))
+				{
+					lines.Insert(i, $"{configKey}:{configValue}");
+				}
+			}
+			File.WriteAllLines(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json", lines);
+		}
 
         public void SaveWhitelistToFile()
         {
