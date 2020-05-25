@@ -1,4 +1,4 @@
-﻿pipeline {
+pipeline {
   agent any
   stages {
     stage('Dependencies') {
@@ -18,10 +18,10 @@
       }
     }
     stage('Package') {
-	  steps {
-		sh 'mv VPNShield/bin/VPNShield.dll Plugin/'
-		sh 'mv VPNShield/bin/Newtonsoft.Json.dll Plugin/dependencies'
-	  }
+      steps {
+        sh 'mv VPNShield/bin/VPNShield.dll Plugin/'
+        sh 'mv VPNShield/bin/Newtonsoft.Json.dll Plugin/dependencies'
+      }
     }
     stage('Archive') {
       steps {
