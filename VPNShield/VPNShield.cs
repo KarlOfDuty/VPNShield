@@ -23,9 +23,9 @@ namespace VPNShield
         name = "VPNShield",
         description = "Blocks users connecting using VPNs.",
         id = "karlofduty.vpnshield",
-        version = "3.2.0",
+        version = "3.2.1",
         SmodMajor = 3,
-        SmodMinor = 4,
+        SmodMinor = 7,
         SmodRevision = 0
     )]
     public class VPNShield : Plugin
@@ -46,7 +46,7 @@ namespace VPNShield
         "    \"verbose\": false,\n" +
         "}";
 
-        private readonly string defaultlist =
+        private readonly string defaultList =
         "[\n" +
         "]";
 
@@ -70,13 +70,13 @@ namespace VPNShield
 			try
 			{
 				SetUpFileSystem();
-				this.Info("Loading config: " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json...");
-				config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"));
+				this.Info("Loading config: " + FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/config.json...");
+				config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/config.json"));
 				this.Info("Loaded config.");
-				this.Info("Loading data files from " + FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/...");
-				autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
-				autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
-				whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
+				this.Info("Loading data files from " + FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/...");
+				autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
+				autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
+				whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
 				this.Info("Loaded data files.");
 			}
 			catch (Exception e)
@@ -87,29 +87,29 @@ namespace VPNShield
 
         public void SetUpFileSystem()
         {
-            if (!Directory.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield"))
+            if (!Directory.Exists(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield"))
             {
-                Directory.CreateDirectory(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield");
+                Directory.CreateDirectory(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield");
             }
 
-            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json"))
+            if (!File.Exists(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/config.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/config.json", defaultConfig);
+                File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/config.json", defaultConfig);
             }
 
-            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json"))
+            if (!File.Exists(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json", defaultlist);
+                File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json", defaultList);
             }
 
-            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json"))
+            if (!File.Exists(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json", defaultlist);
+                File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json", defaultList);
             }
 
-            if (!File.Exists(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json"))
+            if (!File.Exists(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/whitelist.json"))
             {
-                File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json", defaultlist);
+                File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/whitelist.json", defaultList);
             }
         }
 
@@ -123,7 +123,7 @@ namespace VPNShield
                 builder.Append("    \"" + line + "\"," + "\n");
             }
             builder.Append("]\n");
-            File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/whitelist.json", builder.ToString());
+            File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/whitelist.json", builder.ToString());
         }
 
         public void SaveAutoWhitelistToFile()
@@ -136,7 +136,7 @@ namespace VPNShield
                 builder.Append("    \"" + line + "\"," + "\n");
             }
             builder.Append("]\n");
-            File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json", builder.ToString());
+            File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json", builder.ToString());
         }
 
         public void SaveAutoBlacklistToFile()
@@ -149,7 +149,7 @@ namespace VPNShield
                 builder.Append("    \"" + line + "\"," + "\n");
             }
             builder.Append("]\n");
-            File.WriteAllText(FileManager.GetAppFolder(GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json", builder.ToString());
+            File.WriteAllText(FileManager.GetAppFolder(true, !GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json", builder.ToString());
         }
 
         public bool CheckVPN(PlayerJoinEvent ev)
@@ -227,22 +227,21 @@ namespace VPNShield
                 }
             }
             finally
-            {
-                if (response != null)
-                {
-                    response.Close();
-                }
+            { 
+	            response?.Close();
             }
             return false;
         }
 
         public bool CheckSteamAccount(PlayerJoinEvent ev)
         {
+	        if (ev.Player.UserIdType != UserIdType.STEAM) return false;
+
             ServicePointManager.ServerCertificateValidationCallback = SSLValidation;
             HttpWebResponse response = null;
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://steamcommunity.com/profiles/" + ev.Player.SteamId + "?xml=1");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://steamcommunity.com/profiles/" + ev.Player.GetParsedUserID() + "?xml=1");
                 request.Method = "GET";
 
                 response = (HttpWebResponse)request.GetResponse();
@@ -286,10 +285,7 @@ namespace VPNShield
             }
             finally
             {
-                if (response != null)
-                {
-                    response.Close();
-                }
+                response?.Close();
             }
             return false;
         }
@@ -352,11 +348,11 @@ namespace VPNShield
                     {
                         if (!player.HasPermission("vpnshield.enable.vpn"))
                         {
-                            return new string[] { "You don't have permission to use that command." };
+                            return new[] { "You don't have permission to use that command." };
                         }
                     }
                     plugin.config["block-vpns"] = true;
-                    return new string[] { "Blocking of VPNs enabled." };
+                    return new[] { "Blocking of VPNs enabled." };
                 }
                 else if (args[0] == "steam-check")
                 {
@@ -364,14 +360,14 @@ namespace VPNShield
                     {
                         if (!player.HasPermission("vpnshield.enable.steam"))
                         {
-                            return new string[] { "You don't have permission to use that command." };
+                            return new[] { "You don't have permission to use that command." };
                         }
                     }
                     plugin.config["block-new-steam-accounts"] = true;
-                    return new string[] { "Blocking of new Steam accounts enabled." };
+                    return new[] { "Blocking of new Steam accounts enabled." };
                 }
             }
-            return new string[] { "Invalid arguments, usage: \"" + GetUsage() + "\"" };
+            return new[] { "Invalid arguments, usage: \"" + GetUsage() + "\"" };
         }
     }
 
@@ -404,7 +400,7 @@ namespace VPNShield
                     {
                         if (!player.HasPermission("vpnshield.disable.vpn"))
                         {
-                            return new string[] { "You don't have permission to use that command." };
+                            return new[] { "You don't have permission to use that command." };
                         }
                     }
                     plugin.config["block-vpns"] = false;
@@ -416,14 +412,14 @@ namespace VPNShield
                     {
                         if (!player.HasPermission("vpnshield.disable.steam"))
                         {
-                            return new string[] { "You don't have permission to use that command." };
+                            return new[] { "You don't have permission to use that command." };
                         }
                     }
                     plugin.config["block-new-steam-accounts"] = false;
-                    return new string[] { "Blocking of new Steam accounts disabled." };
+                    return new[] { "Blocking of new Steam accounts disabled." };
                 }
             }
-            return new string[] { "Invalid arguments, usage: \"" + GetUsage() + "\"" };
+            return new[] { "Invalid arguments, usage: \"" + GetUsage() + "\"" };
         }
     }
 
@@ -500,16 +496,16 @@ namespace VPNShield
             {
                 if (!player.HasPermission("vpnshield.reload"))
                 {
-                    return new string[] { "You don't have permission to use that command." };
+                    return new[] { "You don't have permission to use that command." };
                 }
             }
 
             plugin.SetUpFileSystem();
-            plugin.config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/config.json"));
-            plugin.autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
-            plugin.autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
-            plugin.whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(plugin.GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
-            return new string[] { "VPNShield has been reloaded." };
+            plugin.config = JObject.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !plugin.GetConfigBool("vs_global")) + "VPNShield/config.json"));
+            plugin.autoWhitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !plugin.GetConfigBool("vs_global")) + "VPNShield/auto-whitelist.json")).Values<string>());
+            plugin.autoBlacklist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !plugin.GetConfigBool("vs_global")) + "VPNShield/auto-blacklist.json")).Values<string>());
+            plugin.whitelist = new HashSet<string>(JArray.Parse(File.ReadAllText(FileManager.GetAppFolder(true, !plugin.GetConfigBool("vs_global")) + "VPNShield/whitelist.json")).Values<string>());
+            return new[] { "VPNShield has been reloaded." };
         }
     }
 
@@ -560,7 +556,7 @@ namespace VPNShield
                     return;
                 }
 
-                if (plugin.whitelist.Contains(ev.Player.SteamId))
+                if (plugin.whitelist.Contains(ev.Player.UserId))
                 {
                     return;
                 }
