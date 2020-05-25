@@ -53,9 +53,7 @@ namespace VPNShield
 		"[\n" +
 		"]";
 
-		public override void OnDisable()
-		{
-		}
+		public override void OnDisable() {}
 
 		public override void Register()
 		{
