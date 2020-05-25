@@ -416,7 +416,7 @@ namespace VPNShield
 						}
 					}
 					plugin.config["block-vpns"] = false;
-					return new string[] { "Blocking of VPNs disabled." };
+					return new[] { "Blocking of VPNs disabled." };
 				}
 				else if (args[0] == "steam-check")
 				{
@@ -446,12 +446,12 @@ namespace VPNShield
 
 		public string GetCommandDescription()
 		{
-			return "Whitelists a player's SteamID";
+			return "Whitelists a player's UserID";
 		}
 
 		public string GetUsage()
 		{
-			return "vs_whitelist <SteamID>";
+			return "vs_whitelist <UserID>";
 		}
 
 		public string[] OnCall(ICommandSender sender, string[] args)
@@ -460,7 +460,7 @@ namespace VPNShield
 			{
 				if (!player.HasPermission("vpnshield.whitelist"))
 				{
-					return new string[] { "You don't have permission to use that command." };
+					return new[] { "You don't have permission to use that command." };
 				}
 			}
 
@@ -470,16 +470,16 @@ namespace VPNShield
 				{
 					plugin.whitelist.Remove(args[0]);
 					plugin.SaveWhitelistToFile();
-					return new string[] { "Player removed from whitelist." };
+					return new[] { "Player removed from whitelist." };
 				}
 				else
 				{
 					plugin.whitelist.Add(args[0]);
 					plugin.SaveWhitelistToFile();
-					return new string[] { "Player added to whitelist." };
+					return new[] { "Player added to whitelist." };
 				}
 			}
-			return new string[] { "Invalid arguments, usage: \"" + GetUsage() + "\"" };
+			return new[] { "Invalid arguments, usage: \"" + GetUsage() + "\"" };
 		}
 	}
 
