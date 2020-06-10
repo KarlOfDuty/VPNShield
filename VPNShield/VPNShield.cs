@@ -23,9 +23,9 @@ namespace VPNShield
 		name = "VPNShield",
 		description = "Blocks users connecting using VPNs.",
 		id = "karlofduty.vpnshield",
-		version = "3.2.1",
+		version = "3.2.2",
 		SmodMajor = 3,
-		SmodMinor = 7,
+		SmodMinor = 8,
 		SmodRevision = 0
 	)]
 	public class VPNShield : Plugin
