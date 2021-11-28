@@ -1,4 +1,6 @@
 # VPNShield [![Build Status](https://jenkins.karlofduty.com/job/VPNShield/job/master/badge/icon)](https://jenkins.karlofduty.com/blue/organizations/jenkins/VPNShield/activity) [![Release](https://img.shields.io/github/release/KarlofDuty/VPNShield.svg)](https://github.com/KarlOfDuty/VPNShield/releases) [![Downloads](https://img.shields.io/github/downloads/KarlOfDuty/VPNShield/total.svg)](https://github.com/KarlOfDuty/VPNShield/releases) [![Discord Server](https://img.shields.io/discord/430468637183442945.svg?label=discord)](https://discord.gg/C5qMvkj)
+
+# This plugin is archived as the smod api is abandoned.
 An Anti-VPN plugin for servermod. Also features blocking new Steam accounts who have not bought anything on Steam. Users with server ranks are ignored.
 
 # Installation
