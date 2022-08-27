@@ -159,7 +159,7 @@ namespace VPNShield
 			{
 				return false;
 			}
-			string ipAddress = ev.Player.IpAddress.Replace("::ffff:", "");
+			string ipAddress = ev.Player.IPAddress.Replace("::ffff:", "");
 			if (autoWhitelist.Contains(ipAddress))
 			{
 				if (config.Value<bool>("verbose"))
@@ -236,7 +236,7 @@ namespace VPNShield
 
 		public bool CheckSteamAccount(PlayerJoinEvent ev)
 		{
-			if (ev.Player.UserIdType != UserIdType.STEAM) return false;
+			if (ev.Player.UserIDType != UserIdType.STEAM) return false;
 
 			ServicePointManager.ServerCertificateValidationCallback = SSLValidation;
 			HttpWebResponse response = null;
@@ -566,7 +566,7 @@ namespace VPNShield
 					return;
 				}
 
-				if (plugin.whitelist.Contains(ev.Player.UserId))
+				if (plugin.whitelist.Contains(ev.Player.UserID))
 				{
 					return;
 				}

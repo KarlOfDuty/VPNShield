@@ -60,11 +60,4 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>taskkill /F /IM SCPSL.exe /T 2&gt;nul &amp;set errorlevel=0
-cd $(ProjectDir)
-copy /y bin\VPNShield.dll ..\..\..\scpserver\sm_plugins\
-mkdir ..\..\..\scpserver\sm_plugins\dependencies
-copy /y bin\Newtonsoft.Json.dll ..\..\..\scpserver\sm_plugins\dependencies\</PostBuildEvent>
-  </PropertyGroup>
 </Project>
