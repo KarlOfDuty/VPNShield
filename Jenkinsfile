@@ -36,7 +36,7 @@ pipeline {
         when { not { triggeredBy 'BuildUpstreamCause' } }
         steps {
             sh 'zip -r VPNShield.zip Plugin/*'
-            archiveArtifacts(artifacts: 'SCPDiscord.zip', onlyIfSuccessful: true)
+            archiveArtifacts(artifacts: 'VPNShield.zip', onlyIfSuccessful: true)
         }
     }
     stage('Send upstream') {
